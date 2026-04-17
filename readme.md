@@ -1,148 +1,136 @@
-# Tutorial: Redes Neurais Artificiais do Zero
+# ANN do zero em Python
 
-### Baseado na obra de David Kopec \| Implementação em Python
+Implementacao didatica de uma Rede Neural Artificial (ANN) sem frameworks de machine learning.
 
-Este projeto é uma implementação didática e pura em Python de uma **Rede Neural Artificial (ANN)** do zero, sem o uso de _frameworks_ de aprendizado de máquina como TensorFlow ou PyTorch. O objetivo é focar nos **fundamentos matemáticos** e na **arquitetura de código** que regem o funcionamento de uma rede neural.
+Objetivo: aprender os fundamentos de `Neuron`, `Layer`, `Network`, feedforward e backpropagation com codigo simples.
 
-Este guia serve como material de apoio para estudantes e desenvolvedores que desejam entender a implementação de uma **Rede Neural Artificial (ANN)** construída puramente em Python, focando nos fundamentos matemáticos, estatísticos e na arquitetura de código, sem o uso de frameworks externos.
+Baseado nos conceitos do livro *Classic Computer Science Problems*, de David Kopec.
 
-A implementação é baseada nos conceitos apresentados no livro *Classic Computer Science Problems* de David Kopec.
-
-## Guia rápido e prático
-
-Se você quer uma explicação mais direta e objetiva sobre o estado atual do projeto, melhorias aplicadas e comandos de uso, consulte:
-
-- [Guia rápido em `ann/read.md`](./ann/read.md)
-
-------------------------------------------------------------------------
-
-## Sumário
-
-1.  [Arquitetura e Componentes](#1-arquitetura-e-componentes)
-    *   [1.1. O Neurônio (`Neuron`)](#11-o-neurônio-neuron)
-    *   [1.2. A Camada (`Layer`)](#12-a-camada-layer)
-    *   [1.3. A Rede (`Network`)](#13-a-rede-network)
-2.  [Matemática e Funções Auxiliares](#2-matemática-e-funções-auxiliares)
-3.  [Treinamento e Aprendizado](#3-treinamento-e-aprendizado)
-    *   [3.1. Feedforward](#31-feedforward)
-    *   [3.2. Backpropagation](#32-backpropagation)
-4.  [Estrutura do Código](#4-estrutura-do-código)
-5.  [Como Executar os Exemplos](#5-como-executar-os-exemplos)
-6.  [Referências](#6-referências)
-
----
-
-## 1. Arquitetura e Componentes
-
-O projeto segue uma arquitetura modular, onde cada elemento fundamental da rede neural é representado por uma classe ou módulo Python.
-
-### 1.1. O Neurônio (`Neuron`)
-
-Cada neurônio recebe dados, processa-os e decide o quanto "disparar" de sinal para o próximo.
 ![Rede neural biológica e artificial](./img/neurons.jpeg)
 
-A unidade básica de processamento. Cada neurônio é responsável por:
-*   Armazenar seus **pesos** (`weights`) e **viés** (implícito no cálculo do produto escalar com um viés de entrada, ou como parte dos pesos, dependendo da implementação exata, mas o código foca em pesos e um `output_cache`).
-*   Realizar a **combinação linear** (produto escalar) das entradas com seus pesos.
-*   Aplicar a **função de ativação** (Sigmoide) ao resultado.
-*   Armazenar o **delta** de erro para a fase de *backpropagation*.
+## Leitura rapida
 
+- Guia enxuto de uso e estado atual: [`ann/read.md`](./ann/read.md)
+- Este arquivo (`readme.md`): explicacao completa + tutorial passo a passo
 
+## O que mudou no projeto (modernizacoes)
 
-### 1.2. A Camada (`Layer`)
+As melhorias abaixo ja estao implementadas:
 
-Uma camada é uma coleção de neurônios que operam em paralelo. A classe `Layer` gerencia:
-*   A criação e inicialização dos neurônios.
-*   A propagação dos sinais de entrada para todos os neurônios da camada.
-*   O cálculo dos deltas de erro para a fase de *backpropagation* (métodos `calculate_deltas_for_output_layer` e `calculate_deltas_for_hidden_layer`).
+- Suporte a `bias` por neuronio (agora entra no calculo da saida e no treino)
+- `sigmoid` numericamente estavel para evitar overflow com valores extremos
+- Caminhos de dataset robustos nos exemplos (via `Path(__file__)`)
+- Reprodutibilidade inicial com `seed(42)` nos exemplos
+- Suite de testes automatizados com `unittest`
+- Estrutura de pacotes explicita com arquivos `__init__.py`
+- Dependencias alinhadas: projeto usa apenas stdlib do Python
 
-### 1.3. A Rede (`Network`)
-
-A classe `Network` é o orquestrador principal, responsável por:
-*   Definir a **estrutura da rede** (número de camadas e neurônios em cada uma).
-*   Gerenciar a sequência de camadas.
-*   Implementar os métodos de **treinamento** (`train`) e **validação** (`validate`).
-*   Propagar o sinal de entrada através de todas as camadas (`outputs`).
-
-## 2. Matemática e Funções Auxiliares
-
-O módulo `util.py` contém as funções matemáticas essenciais para o funcionamento da rede:
-
-| Função | Descrição | Fórmula Matemática |
-| :--- | :--- | :--- |
-| `dot_product` | Calcula o produto escalar entre dois vetores (entradas e pesos). | $z = \sum_{i} (x_i \cdot w_i)$ |
-| `sigmoid` | Função de ativação utilizada para "esmagar" o valor de saída do neurônio para um intervalo entre 0 e 1. | $S(x) = \frac{1}{1 + e^{-x}}$ |
-| `derivative_sigmoid` | Derivada da função Sigmoide, crucial para o cálculo do gradiente no *backpropagation*. | $S'(x) = S(x) \cdot (1 - S(x))$ |
-| `normalize_by_feature_scaling` | Função de pré-processamento de dados que normaliza cada coluna do *dataset* para o intervalo $[0, 1]$. | $X_{norm} = \frac{X - X_{min}}{X_{max} - X_{min}}$ |
-
-## 3. Treinamento e Aprendizado
-
-O aprendizado da rede é baseado no algoritmo de **Backpropagation**, que ajusta os pesos para minimizar o erro entre a saída prevista e a saída esperada.
-
-### 3.1. Feedforward
-
-A fase de propagação direta (`outputs` em `Network`) é o processo de levar a entrada através da rede, camada por camada, até a saída final. O resultado de uma camada serve como entrada para a próxima.
-
-### 3.2. Backpropagation
-
-A fase de propagação reversa (`backpropagate` em `Network`) é o coração do aprendizado e envolve os seguintes passos:
-
-1.  **Cálculo do Erro:** O erro é calculado na camada de saída.
-2.  **Propagação do Erro:** O erro é propagado de volta, da camada de saída para as camadas ocultas.
-3.  **Cálculo dos Deltas:** Para cada neurônio, é calculado o **delta** (a contribuição do neurônio para o erro total), usando a derivada da função de ativação.
-4.  **Atualização dos Pesos:** Os pesos são ajustados na direção oposta ao gradiente do erro, multiplicados pela **Taxa de Aprendizado** (`learning_rate`).
-
-$$
-w_{\mathrm{novo}} = w_{\mathrm{antigo}} + (\mathrm{learning\ rate} \cdot \delta \cdot \mathrm{output\ cache})
-$$
-
-## 4. Estrutura do Código
-
-O projeto está organizado da seguinte forma:
+## Estrutura do projeto
 
 ```text
-ann/
-├── Core/
-│   ├── layer.py      # Implementa a Camada
-│   ├── network.py    # Implementa a Rede Neural (Orquestrador)
-│   ├── neuron.py     # Implementa o Neurônio
-│   └── util.py       # Funções matemáticas e de pré-processamento
-├── examples/
-│   ├── iris_test.py  # Exemplo de classificação do dataset Iris
-│   └── wine_test.py  # Exemplo de classificação do dataset Wine 
-``` 
-
-## 5. Como Executar os Exemplos
-
-Para testar a rede neural, você pode executar os exemplos de classificação inclusos:
-
-1.  **Pré-requisitos:** Certifique-se de ter Python 3.11+ instalado. O projeto utiliza apenas bibliotecas padrão (como `csv`, `typing`, `math` e `random`), portanto não há dependências externas obrigatórias. É aconselhável criar um ambiente virtual:
-
-```bash
-mkdir ~/envs
-python3 -m venv ~/envs/positron
-source ~/envs/positron/bin/activate
+ANN/
+├── ann/
+│   ├── Core/
+│   │   ├── util.py
+│   │   ├── neuron.py
+│   │   ├── layer.py
+│   │   └── network.py
+│   ├── data/
+│   │   ├── iris.csv
+│   │   └── wine.csv
+│   ├── examples/
+│   │   ├── iris_test.py
+│   │   └── wine_test.py
+│   └── read.md
+├── tests/
+│   ├── test_util.py
+│   └── test_network.py
+└── readme.md
 ```
 
-Opcionalmente, você pode atualizar o `pip`:
+## Como a rede funciona (simples)
+
+1. Entrada: voce envia os atributos (ex.: medidas de uma flor).
+2. Feedforward: os dados passam camada por camada.
+3. Erro: a saida prevista e comparada com a esperada.
+4. Backpropagation: o erro volta pelas camadas.
+5. Atualizacao: pesos e `bias` sao ajustados.
+6. Repeticao: apos varias iteracoes, a rede melhora.
+
+## Componentes principais
+
+### `ann/Core/util.py`
+
+- `dot_product`: produto escalar
+- `sigmoid`: ativacao (com estabilidade numerica)
+- `derivative_sigmoid`: derivada da sigmoide
+- `normalize_by_feature_scaling`: normaliza features para `[0, 1]`
+
+### `ann/Core/neuron.py`
+
+- Define o neuronio
+- Guarda `weights`, `bias`, `output_cache`, `delta`
+- Calcula saida com:
+
+`z = dot_product(inputs, weights) + bias`
+
+### `ann/Core/layer.py`
+
+- Cria e organiza os neuronios da camada
+- Calcula saida da camada
+- Calcula deltas para camada de saida e oculta
+
+### `ann/Core/network.py`
+
+- Monta a arquitetura da rede
+- Executa `outputs` (feedforward)
+- Executa `backpropagate`
+- Atualiza `weights` e `bias` no treino
+- Valida previsoes com `validate`
+
+## Tutorial de uso (passo a passo)
+
+### 1) Pre-requisitos
+
+- Python 3.11 ou superior
+- Nenhuma dependencia externa obrigatoria
+
+Opcional: criar ambiente virtual.
 
 ```bash
-pip3 install --upgrade pip
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
 ```
 
-2.  **Execução:** A partir da raiz do projeto (diretório que contém a pasta `ann`), execute o módulo desejado.
+### 2) Rodar exemplos
 
-**Exemplo: Classificação do Dataset Iris**
+A partir da raiz do projeto (pasta que contem `ann/`):
 
 ```bash
-cd ~/python/ANN   # diretório que contém a pasta 'ann'
 python -m ann.examples.iris_test
+python -m ann.examples.wine_test
 ```
 
-O script `iris_test.py` carrega o dataset iris.csv, normaliza os dados, treina a rede com 140 amostras por 50 vezes e testa a acurácia com as 10 amostras restantes. O script `wine_test.py` carrega o dataset wine.csv normaliza os dados, treina a rede com 150 amostras por 10 vezes e testa com 28 dados.  
+Cada comando imprime o total de acertos e a acuracia.
 
-## 6. Referências
+### 3) Rodar testes
 
-Este projeto é uma implementação prática dos conceitos de redes neurais multicamadas com backpropagation, inspirada no trabalho de:
+Ainda na raiz do projeto:
 
-*   **[Kopec, David.](https://classicproblems.com/)** *Classic Computer Science Problems*. Manning Publications, 2019. (Referência principal para a arquitetura e lógica de implementação).
+```bash
+python -m unittest discover -s tests -v
+```
+
+Se tudo estiver correto, os testes aparecem com status `ok`.
+
+## Boas praticas para estudar e evoluir
+
+- Comece por `ann/Core/neuron.py` e `ann/Core/layer.py`
+- Depois leia `ann/Core/network.py` para ver o fluxo completo
+- Execute os exemplos e altere arquitetura/taxa de aprendizado
+- Rode os testes apos cada mudanca
+
+## Referencia
+
+- [Kopec, David - Classic Computer Science Problems](https://classicproblems.com/)
