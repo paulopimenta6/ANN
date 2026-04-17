@@ -19,7 +19,7 @@ Baseado nos conceitos de *Classic Computer Science Problems* (David Kopec).
 
 ## Neurônio biológico x neurônio artificial
 
-![Neurônio biológico e artificial](./ann/img/neurons.jpeg)
+![Neurônio biológico e artificial](./img/neurons.jpeg)
 
 ### Neurônio biológico (ideia intuitiva)
 
