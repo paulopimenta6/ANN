@@ -31,7 +31,7 @@ Em resumo: recebe estímulos, combina informações e gera uma resposta.
 
 ### Neurônio artificial (no código)
 
-No projeto, um neurônio recebe entradas \(x_1, x_2, \dots, x_n\), aplica pesos \(w_1, w_2, \dots, w_n\), soma com o viés \(b\) e passa por uma função de ativação:
+No projeto, um neurônio recebe entradas x₁, x₂, …, xₙ, aplica pesos w₁, w₂, …, wₙ, soma com o viés b e passa por uma função de ativação:
 
 $$
 z = \sum_{i=1}^{n} x_i w_i + b
