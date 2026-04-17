@@ -239,13 +239,6 @@ Como interpretar:
 - `FAIL`/`ERROR`: algo precisa ser corrigido;
 - no final, o resumo mostra quantos testes foram executados.
 
-## Boas práticas para evolução
-
-- Alterou função de ativação? Rode os testes.
-- Mudou regra matemática? Adicione teste específico.
-- Mudou exemplo de treino? Compare acurácia com seeds iguais.
-- Faça mudanças pequenas e valide em cada passo.
-
 ## Referência
 
 - [Kopec, David - Classic Computer Science Problems](https://classicproblems.com/)
