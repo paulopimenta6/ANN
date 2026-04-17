@@ -1,4 +1,4 @@
-# ANN do zero em Python
+# Tutorial: Redes Neurais Artificiais do Zero
 
 Projeto didático de Rede Neural Artificial (ANN) implementada em Python puro, sem frameworks de machine learning.
 
