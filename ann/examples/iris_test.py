@@ -1,17 +1,20 @@
 import csv
 from typing import List
+from pathlib import Path
 from ..Core.util import normalize_by_feature_scaling
 from ..Core.network import Network
-from random import shuffle
+from random import shuffle, seed
 
 if __name__=="__main__":
+    seed(42)
     # Listas para armazenar os dados do conjunto Iris
     iris_parameters: List[List[float]] = []
     iris_classifications: List[List[float]] = []
     iris_species: List[str] = []
+    data_path = Path(__file__).resolve().parents[1] / "data" / "iris.csv"
 
     # Carrega o conjunto de dados Iris do arquivo CSV
-    with open('ann/data/iris.csv', mode = 'r') as iris_file:
+    with data_path.open(mode='r') as iris_file:
         irises: List = list(csv.reader(iris_file)) # Le todas as linhas do arquivo CSV
         shuffle(irises) # Embaralha as linhas para garantir aleatoriedade
         for iris in irises:

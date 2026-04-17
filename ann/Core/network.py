@@ -52,6 +52,7 @@ class Network:
                 for w in range(len(neuron.weights)):
                     neuron.weights[w] = neuron.weights[w] + (neuron.learning_rate
                     *(layer.previous_layer.output_cache[w])*neuron.delta)
+                neuron.bias = neuron.bias + (neuron.learning_rate * neuron.delta)
 
     # Funcao de treinamento da rede neural.
     # train() usa os resultados de outputs, obtidos a partir de varias entradas e 

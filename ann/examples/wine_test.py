@@ -1,15 +1,18 @@
 import csv
 from typing import List
+from pathlib import Path
 from ..Core.util import normalize_by_feature_scaling
 from ..Core.network import Network
-from random import shuffle
+from random import shuffle, seed
 
 if __name__=="__main__":
+    seed(42)
     # Listas para armazenar os dados do conjunto Wine
     wine_parameters: List[List[float]] = []
     wine_classifications: List[List[float]] = []
     wine_species: List[int] = []
-    with open('ann/data/wine.csv', mode ='r') as wine_file:
+    data_path = Path(__file__).resolve().parents[1] / "data" / "wine.csv"
+    with data_path.open(mode='r') as wine_file:
         wines: List = list(csv.reader(wine_file, quoting=csv.QUOTE_NONNUMERIC))
         shuffle(wines) # Deixa as linhas em ordem aleatoria
         for wine in wines:

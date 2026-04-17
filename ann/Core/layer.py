@@ -20,9 +20,11 @@ class Layer:
             # Camada de entrada: não há pesos (os valores virão diretamente dos inputs)
             if previous_layer is None:
                 random_weights: List[float] = []
+                random_bias: float = 0.0
             else:
                 # Um peso por neurônio da camada anterior, inicializado aleatoriamente
                 random_weights = [random() for _ in range(len(previous_layer.neurons))]
+                random_bias = random()
             # Cria o neurônio com pesos iniciais, taxa de aprendizado e funções de ativação
             neuron: Neuron = Neuron(
                 random_weights,
@@ -30,6 +32,7 @@ class Layer:
                 activation_function,
                 derivative_activation_function,
             )
+            neuron.bias = random_bias
             self.neurons.append(neuron)
         # `output_cache` guarda a última saída calculada pela camada para uso posterior
         self.output_cache: List[float] = [0.0 for _ in range(num_neurons)]

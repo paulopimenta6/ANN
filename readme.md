@@ -8,6 +8,12 @@ Este guia serve como material de apoio para estudantes e desenvolvedores que des
 
 A implementação é baseada nos conceitos apresentados no livro *Classic Computer Science Problems* de David Kopec.
 
+## Guia rápido e prático
+
+Se você quer uma explicação mais direta e objetiva sobre o estado atual do projeto, melhorias aplicadas e comandos de uso, consulte:
+
+- [Guia rápido em `ann/read.md`](./ann/read.md)
+
 ------------------------------------------------------------------------
 
 ## Sumário
@@ -110,7 +116,7 @@ ann/
 
 Para testar a rede neural, você pode executar os exemplos de classificação inclusos:
 
-1.  **Pré-requisitos:** Certifique-se de ter o Python e as libs necessárias instaladas, estas últimas se encontram no arquivo requirements.txt. O projeto utiliza apenas bibliotecas padrão (como `csv` e `typing`). É aconselhável ter um ambiente Python para este projeto. A criação é simples e usa os seguintes comandos:
+1.  **Pré-requisitos:** Certifique-se de ter Python 3.11+ instalado. O projeto utiliza apenas bibliotecas padrão (como `csv`, `typing`, `math` e `random`), portanto não há dependências externas obrigatórias. É aconselhável criar um ambiente virtual:
 
 ```bash
 mkdir ~/envs
@@ -118,20 +124,19 @@ python3 -m venv ~/envs/positron
 source ~/envs/positron/bin/activate
 ```
 
-e para instalar pacotes básicos use os comandos:
+Opcionalmente, você pode atualizar o `pip`:
 
 ```bash
 pip3 install --upgrade pip
-pip3 install numpy pandas matplotlib seaborn scikit-learn
 ```
 
-2.  **Execução:** Navegue até a pasta `ann/examples` e execute o arquivo desejado.
+2.  **Execução:** A partir da raiz do projeto (diretório que contém a pasta `ann`), execute o módulo desejado.
 
 **Exemplo: Classificação do Dataset Iris**
 
 ```bash
 cd ~/python/ANN   # diretório que contém a pasta 'ann'
-~/envs/positron/bin/python -m ann.examples.iris_test
+python -m ann.examples.iris_test
 ```
 
 O script `iris_test.py` carrega o dataset iris.csv, normaliza os dados, treina a rede com 140 amostras por 50 vezes e testa a acurácia com as 10 amostras restantes. O script `wine_test.py` carrega o dataset wine.csv normaliza os dados, treina a rede com 150 amostras por 10 vezes e testa com 28 dados.  

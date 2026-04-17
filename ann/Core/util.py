@@ -13,7 +13,11 @@ def dot_product(xs: List[float], ys: List[float]) -> float:
 # [1] https://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_sigmoide
 # [2] https://en.wikipedia.org/wiki/Logistic_regression 
 def sigmoid(x: float) -> float:
-    return 1.0/(1.0 + exp(-x))
+    # Implementacao numericamente estavel para evitar overflow com valores extremos.
+    if x >= 0:
+        return 1.0 / (1.0 + exp(-x))
+    exp_x: float = exp(x)
+    return exp_x / (1.0 + exp_x)
 
 # derivada da função sigmoid
 def derivative_sigmoid(x: float) -> float:
