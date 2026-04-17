@@ -221,7 +221,7 @@ Parâmetros disponíveis nos scripts:
 - `--activation`: `sigmoid`, `tanh`, `relu`, `leaky_relu`
 - `--epochs`: número de épocas de treino
 - `--seed`: semente para aleatoriedade
-- `--leaky-alpha`: valor de \(\alpha\) da Leaky ReLU
+- `--leaky-alpha`: valor de α da Leaky ReLU
 
 Saída esperada: total de acertos, total de testes e acurácia em porcentagem.
 
