@@ -1,29 +1,165 @@
 # ANN do zero em Python
 
-Implementacao didatica de uma Rede Neural Artificial (ANN) sem frameworks de machine learning.
+Projeto didático de Rede Neural Artificial (ANN) implementada em Python puro, sem frameworks de machine learning.
 
-Objetivo: aprender os fundamentos de `Neuron`, `Layer`, `Network`, feedforward e backpropagation com codigo simples.
+A ideia é estudar os fundamentos de:
 
-Baseado nos conceitos do livro *Classic Computer Science Problems*, de David Kopec.
+- neurônio artificial;
+- camadas;
+- feedforward;
+- backpropagation;
+- atualização de pesos e `bias`.
 
-![Rede neural biológica e artificial](./img/neurons.jpeg)
+Baseado nos conceitos de *Classic Computer Science Problems* (David Kopec).
 
-## Leitura rapida
+## Guia rápido
 
-- Guia enxuto de uso e estado atual: [`ann/read.md`](./ann/read.md)
-- Este arquivo (`readme.md`): explicacao completa + tutorial passo a passo
+- Visão resumida do projeto: [`ann/read.md`](./ann/read.md)
+- Este arquivo: explicação completa, matemática e tutorial passo a passo
 
-## O que mudou no projeto (modernizacoes)
+## Neurônio biológico x neurônio artificial
 
-As melhorias abaixo ja estao implementadas:
+![Neurônio biológico e artificial](./ann/img/neurons.jpeg)
 
-- Suporte a `bias` por neuronio (agora entra no calculo da saida e no treino)
-- `sigmoid` numericamente estavel para evitar overflow com valores extremos
-- Caminhos de dataset robustos nos exemplos (via `Path(__file__)`)
-- Reprodutibilidade inicial com `seed(42)` nos exemplos
-- Suite de testes automatizados com `unittest`
-- Estrutura de pacotes explicita com arquivos `__init__.py`
-- Dependencias alinhadas: projeto usa apenas stdlib do Python
+### Neurônio biológico (ideia intuitiva)
+
+- **Dendritos** recebem sinais.
+- **Corpo celular** integra esses sinais.
+- **Axônio** transmite a resposta para outros neurônios.
+
+Em resumo: recebe estímulos, combina informações e gera uma resposta.
+
+### Neurônio artificial (no código)
+
+No projeto, um neurônio recebe entradas \(x_1, x_2, \dots, x_n\), aplica pesos \(w_1, w_2, \dots, w_n\), soma com o viés \(b\) e passa por uma função de ativação:
+
+$$
+z = \sum_{i=1}^{n} x_i w_i + b
+$$
+
+$$
+\hat{y} = f(z)
+$$
+
+Onde:
+
+- \(z\): combinação linear;
+- \(b\): `bias`;
+- \(f\): ativação (sigmoid, tanh, relu ou leaky_relu).
+
+## Funções de ativação disponíveis
+
+Implementadas em `ann/Core/util.py`:
+
+1. **Sigmoid**
+
+$$
+\sigma(x)=\frac{1}{1+e^{-x}}
+$$
+
+$$
+\sigma'(x)=\sigma(x)\left(1-\sigma(x)\right)
+$$
+
+2. **Tanh**
+
+$$
+\tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}
+$$
+
+$$
+\frac{d}{dx}\tanh(x)=1-\tanh^2(x)
+$$
+
+3. **ReLU**
+
+$$
+\text{ReLU}(x)=\max(0,x)
+$$
+
+$$
+\text{ReLU}'(x)=
+\begin{cases}
+1, & x>0 \\
+0, & x\le 0
+\end{cases}
+$$
+
+4. **Leaky ReLU**
+
+$$
+\text{LeakyReLU}(x)=
+\begin{cases}
+x, & x>0 \\
+\alpha x, & x\le 0
+\end{cases}
+$$
+
+$$
+\text{LeakyReLU}'(x)=
+\begin{cases}
+1, & x>0 \\
+\alpha, & x\le 0
+\end{cases}
+$$
+
+## Matemática do treinamento (passo a passo)
+
+### 1) Feedforward
+
+Cada camada calcula sua saída e repassa para a próxima:
+
+$$
+a^{(l)} = f\!\left(W^{(l)}a^{(l-1)} + b^{(l)}\right)
+$$
+
+### 2) Erro na saída
+
+Para cada neurônio de saída, o código usa o erro:
+
+$$
+e_j = y_j - \hat{y}_j
+$$
+
+### 3) Delta da camada de saída
+
+$$
+\delta_j^{(L)} = f'(z_j^{(L)}) \cdot (y_j - \hat{y}_j)
+$$
+
+### 4) Delta das camadas ocultas
+
+$$
+\delta_i^{(l)} = f'(z_i^{(l)}) \sum_j w_{ij}^{(l+1)}\delta_j^{(l+1)}
+$$
+
+### 5) Atualização dos pesos e bias
+
+Para cada peso:
+
+$$
+w_{ij} \leftarrow w_{ij} + \eta \cdot a_i^{(l-1)} \cdot \delta_j^{(l)}
+$$
+
+Para o bias:
+
+$$
+b_j \leftarrow b_j + \eta \cdot \delta_j^{(l)}
+$$
+
+Onde \(\eta\) é a taxa de aprendizado (`learning_rate`).
+
+## Modernizações já aplicadas
+
+- `bias` em cada neurônio;
+- `sigmoid` numericamente estável;
+- novas ativações: `tanh`, `relu`, `leaky_relu`;
+- seleção de ativação por parâmetro de linha de comando;
+- caminhos de dados robustos com `Path(__file__)`;
+- `seed` configurável para reprodutibilidade;
+- testes automatizados com `unittest`;
+- estrutura de pacotes explícita com `__init__.py`;
+- dependências externas não obrigatórias (stdlib).
 
 ## Estrutura do projeto
 
@@ -48,54 +184,14 @@ ANN/
 └── readme.md
 ```
 
-## Como a rede funciona (simples)
+## Tutorial de execução (detalhado)
 
-1. Entrada: voce envia os atributos (ex.: medidas de uma flor).
-2. Feedforward: os dados passam camada por camada.
-3. Erro: a saida prevista e comparada com a esperada.
-4. Backpropagation: o erro volta pelas camadas.
-5. Atualizacao: pesos e `bias` sao ajustados.
-6. Repeticao: apos varias iteracoes, a rede melhora.
+### 1) Pré-requisitos
 
-## Componentes principais
+- Python 3.11+
+- terminal na raiz do projeto (pasta que contém `ann/`)
 
-### `ann/Core/util.py`
-
-- `dot_product`: produto escalar
-- `sigmoid`: ativacao (com estabilidade numerica)
-- `derivative_sigmoid`: derivada da sigmoide
-- `normalize_by_feature_scaling`: normaliza features para `[0, 1]`
-
-### `ann/Core/neuron.py`
-
-- Define o neuronio
-- Guarda `weights`, `bias`, `output_cache`, `delta`
-- Calcula saida com:
-
-`z = dot_product(inputs, weights) + bias`
-
-### `ann/Core/layer.py`
-
-- Cria e organiza os neuronios da camada
-- Calcula saida da camada
-- Calcula deltas para camada de saida e oculta
-
-### `ann/Core/network.py`
-
-- Monta a arquitetura da rede
-- Executa `outputs` (feedforward)
-- Executa `backpropagate`
-- Atualiza `weights` e `bias` no treino
-- Valida previsoes com `validate`
-
-## Tutorial de uso (passo a passo)
-
-### 1) Pre-requisitos
-
-- Python 3.11 ou superior
-- Nenhuma dependencia externa obrigatoria
-
-Opcional: criar ambiente virtual.
+Opcional: ambiente virtual.
 
 ```bash
 python3 -m venv .venv
@@ -103,34 +199,53 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 ```
 
-### 2) Rodar exemplos
+### 2) Executar os exemplos
 
-A partir da raiz do projeto (pasta que contem `ann/`):
+Com parâmetros padrão:
 
 ```bash
 python -m ann.examples.iris_test
 python -m ann.examples.wine_test
 ```
 
-Cada comando imprime o total de acertos e a acuracia.
+Com ativação parametrizada:
 
-### 3) Rodar testes
+```bash
+python -m ann.examples.iris_test --activation tanh --epochs 60 --seed 42
+python -m ann.examples.wine_test --activation relu --epochs 20 --seed 7
+python -m ann.examples.iris_test --activation leaky_relu --leaky-alpha 0.05
+```
 
-Ainda na raiz do projeto:
+Parâmetros disponíveis nos scripts:
+
+- `--activation`: `sigmoid`, `tanh`, `relu`, `leaky_relu`
+- `--epochs`: número de épocas de treino
+- `--seed`: semente para aleatoriedade
+- `--leaky-alpha`: valor de \(\alpha\) da Leaky ReLU
+
+Saída esperada: total de acertos, total de testes e acurácia em porcentagem.
+
+### 3) Executar os testes
+
+Rode toda a suíte:
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-Se tudo estiver correto, os testes aparecem com status `ok`.
+Como interpretar:
 
-## Boas praticas para estudar e evoluir
+- `ok`: teste passou;
+- `FAIL`/`ERROR`: algo precisa ser corrigido;
+- no final, o resumo mostra quantos testes foram executados.
 
-- Comece por `ann/Core/neuron.py` e `ann/Core/layer.py`
-- Depois leia `ann/Core/network.py` para ver o fluxo completo
-- Execute os exemplos e altere arquitetura/taxa de aprendizado
-- Rode os testes apos cada mudanca
+## Boas práticas para evolução
 
-## Referencia
+- Alterou função de ativação? Rode os testes.
+- Mudou regra matemática? Adicione teste específico.
+- Mudou exemplo de treino? Compare acurácia com seeds iguais.
+- Faça mudanças pequenas e valide em cada passo.
+
+## Referência
 
 - [Kopec, David - Classic Computer Science Problems](https://classicproblems.com/)

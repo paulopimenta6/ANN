@@ -1,5 +1,5 @@
-from typing import List
-from math import exp
+from typing import List, Callable, Tuple
+from math import exp, tanh
 
 # Funcao para calcular o produto escalar entre dois vetores
 # Definicao: https://en.wikipedia.org/wiki/Dot_product
@@ -23,6 +23,53 @@ def sigmoid(x: float) -> float:
 def derivative_sigmoid(x: float) -> float:
     sig: float = sigmoid(x)
     return sig*(1-sig)     
+
+# Funcao de ativacao tanh: mapeia para o intervalo [-1, 1].
+def tanh_activation(x: float) -> float:
+    return tanh(x)
+
+# Derivada de tanh: 1 - tanh(x)^2
+def derivative_tanh_activation(x: float) -> float:
+    tanh_x: float = tanh_activation(x)
+    return 1.0 - (tanh_x * tanh_x)
+
+# Funcao de ativacao ReLU: retorna zero para negativos.
+def relu_activation(x: float) -> float:
+    return x if x > 0.0 else 0.0
+
+# Derivada de ReLU.
+def derivative_relu_activation(x: float) -> float:
+    return 1.0 if x > 0.0 else 0.0
+
+# Funcao de ativacao Leaky ReLU: pequeno gradiente para negativos.
+def leaky_relu_activation(x: float, alpha: float = 0.01) -> float:
+    return x if x > 0.0 else alpha * x
+
+# Derivada de Leaky ReLU.
+def derivative_leaky_relu_activation(x: float, alpha: float = 0.01) -> float:
+    return 1.0 if x > 0.0 else alpha
+
+
+def resolve_activation_functions(
+    name: str, leaky_alpha: float = 0.01
+) -> Tuple[Callable[[float], float], Callable[[float], float]]:
+    """Retorna (funcao_ativacao, derivada) com base no nome informado."""
+    normalized_name = name.strip().lower()
+
+    if normalized_name == "sigmoid":
+        return sigmoid, derivative_sigmoid
+    if normalized_name == "tanh":
+        return tanh_activation, derivative_tanh_activation
+    if normalized_name == "relu":
+        return relu_activation, derivative_relu_activation
+    if normalized_name == "leaky_relu":
+        return (
+            lambda x: leaky_relu_activation(x, alpha=leaky_alpha),
+            lambda x: derivative_leaky_relu_activation(x, alpha=leaky_alpha),
+        )
+    raise ValueError(
+        "Funcao de ativacao invalida. Use: sigmoid, tanh, relu ou leaky_relu."
+    )
 
 # Supoe-se que todas as linhas tem o mesmo tamanho
 # e esta funcao e a feature scaling de cada coluna para que esteja no intervalo de 0 a 1

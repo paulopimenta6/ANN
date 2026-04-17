@@ -1,12 +1,31 @@
 import csv
+import argparse
 from typing import List
 from pathlib import Path
-from ..Core.util import normalize_by_feature_scaling
+from ..Core.util import normalize_by_feature_scaling, resolve_activation_functions
 from ..Core.network import Network
 from random import shuffle, seed
 
 if __name__=="__main__":
-    seed(42)
+    parser = argparse.ArgumentParser(description="Treina ANN no dataset Iris.")
+    parser.add_argument(
+        "--activation",
+        type=str,
+        default="sigmoid",
+        choices=["sigmoid", "tanh", "relu", "leaky_relu"],
+        help="Funcao de ativacao da rede.",
+    )
+    parser.add_argument(
+        "--leaky-alpha",
+        type=float,
+        default=0.01,
+        help="Alpha da Leaky ReLU.",
+    )
+    parser.add_argument("--seed", type=int, default=42, help="Seed aleatoria.")
+    parser.add_argument("--epochs", type=int, default=50, help="Numero de epocas.")
+    args = parser.parse_args()
+
+    seed(args.seed)
     # Listas para armazenar os dados do conjunto Iris
     iris_parameters: List[List[float]] = []
     iris_classifications: List[List[float]] = []
@@ -29,7 +48,15 @@ if __name__=="__main__":
                 iris_classifications.append([0.0,0.0,1.0]) # One-hot encoding para Iris-virginica
             iris_species.append(species) # Armazena o nome da especie
     normalize_by_feature_scaling(iris_parameters) # Normaliza os parametros usando feature scaling
-    iris_network: Network = Network([4,6,3], 0.3) # Cria a rede neural com 4 entradas, 6 neuronios na camada oculta e 3 saidas
+    activation_function, derivative_activation_function = resolve_activation_functions(
+        args.activation, leaky_alpha=args.leaky_alpha
+    )
+    iris_network: Network = Network(
+        [4, 6, 3],
+        0.3,
+        activation_function=activation_function,
+        derivative_activation_function=derivative_activation_function,
+    ) # Cria a rede neural com 4 entradas, 6 neuronios na camada oculta e 3 saidas
 
     def iris_interpret_output(output: List[float]) -> str:
         if max(output) == output[0]:
@@ -43,7 +70,7 @@ if __name__=="__main__":
     iris_trainers: List[List[float]] = iris_parameters[0:140]
     iris_trainers_corrects: List[List[float]] = iris_classifications[0:140]
 
-    for _ in range(50):
+    for _ in range(args.epochs):
         iris_network.train(iris_trainers, iris_trainers_corrects)
 
     # Teste nos 10 ultimos dados da amostra de iris do conjunto
@@ -51,4 +78,7 @@ if __name__=="__main__":
     iris_testers_corrects: List[str] = iris_species[140:150]
     iris_results = iris_network.validate(iris_testers, iris_testers_corrects, iris_interpret_output)
 
-    print(f"{iris_results[0]} correct of {iris_results[1]} = {iris_results[2]*100}%")
+    print(
+        f"{iris_results[0]} correct of {iris_results[1]} = {iris_results[2]*100}% "
+        f"(activation={args.activation}, epochs={args.epochs}, seed={args.seed})"
+    )

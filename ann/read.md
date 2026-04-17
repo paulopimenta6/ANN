@@ -53,6 +53,10 @@ Estas melhorias ja foram aplicadas:
 7. **Dependencias alinhadas**
    - O projeto foi padronizado para uso de bibliotecas da stdlib (sem dependencias externas obrigatorias).
 
+8. **Ativacao parametrizavel via CLI**
+   - Agora os exemplos aceitam a escolha de ativacao por argumento.
+   - Suporte atual: `sigmoid`, `tanh`, `relu`, `leaky_relu`.
+
 ## Como executar os exemplos
 
 Na raiz do projeto (pasta que contem `ann/`), execute:
@@ -61,6 +65,21 @@ Na raiz do projeto (pasta que contem `ann/`), execute:
 python -m ann.examples.iris_test
 python -m ann.examples.wine_test
 ```
+
+Voce tambem pode parametrizar a execucao:
+
+```bash
+python -m ann.examples.iris_test --activation tanh --epochs 60 --seed 42
+python -m ann.examples.wine_test --activation relu --epochs 20 --seed 7
+python -m ann.examples.iris_test --activation leaky_relu --leaky-alpha 0.05
+```
+
+Parametros disponiveis nos exemplos:
+
+- `--activation`: `sigmoid`, `tanh`, `relu`, `leaky_relu`
+- `--epochs`: quantidade de epocas de treino
+- `--seed`: controle de aleatoriedade
+- `--leaky-alpha`: alpha da Leaky ReLU
 
 ## Como rodar os testes
 
