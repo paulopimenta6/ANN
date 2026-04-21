@@ -1,3 +1,23 @@
+# wine_test.py
+# This file is based on code from:
+# "Classic Computer Science Problems in Python" by David Kopec
+# Original source: https://github.com/davecom/ClassicComputerScienceProblemsInPython
+#
+# Copyright 2018 David Kopec
+#
+# Modifications Copyright 2026 Paulo Pimenta
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at:
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# This file includes modifications such as:
+# - Additional activation functions (ReLU, tanh, Leaky ReLU)
+# - Numerical stability improvements
+# - Structural and modular adjustments
+
 import csv
 import argparse
 from typing import List
