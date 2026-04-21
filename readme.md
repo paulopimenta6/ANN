@@ -17,18 +17,6 @@ Original repository: https://github.com/davecom/ClassicComputerScienceProblemsIn
 
 The original code is licensed under the Apache License 2.0.  
 This project complies with that license and includes proper attribution in all derived files.
-
-### What this project adds
-
-This repository extends the original implementation with:
-
-- Additional activation functions: tanh, ReLU, Leaky ReLU
-- Numerical stability improvements (e.g., sigmoid)
-- Command-line parameterization
-- Unit testing (unittest)
-- Modular project structure
-- Reproducibility via random seed control
-
 This project should be understood as an **educational extension and adaptation**, not a fully original implementation.
 
 ------------------------------------------------------------------------
