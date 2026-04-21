@@ -12,6 +12,29 @@ A ideia é estudar os fundamentos de:
 
 Baseado nos conceitos de *Classic Computer Science Problems* (David Kopec).
 
+## Attribution and License
+
+This project is based on the neural network implementation from the book:
+
+**"Classic Computer Science Problems in Python" by David Kopec (2018)**  
+Original repository: https://github.com/davecom/ClassicComputerScienceProblemsInPython
+
+The original code is licensed under the Apache License 2.0.  
+This project complies with that license and includes proper attribution in all derived files.
+
+### What this project adds
+
+This repository extends the original implementation with:
+
+- Additional activation functions: tanh, ReLU, Leaky ReLU
+- Numerical stability improvements (e.g., sigmoid)
+- Command-line parameterization
+- Unit testing (unittest)
+- Modular project structure
+- Reproducibility via random seed control
+
+This project should be understood as an **educational extension and adaptation**, not a fully original implementation.
+
 ## Guia rápido
 
 - Visão resumida do projeto: [`ann/read.md`](./ann/read.md)
